@@ -12,6 +12,7 @@ return [
     | as the size rules. Feel free to tweak each of these messages here.
     |
     */
+    'money'                => 'The :attribute is not a valid money format.',
     'alpha_spaces'         => 'The :attribute can only contain letters, hypens and spaces.',
     'accepted'             => 'The :attribute must be accepted.',
     'active_url'           => 'The :attribute is not a valid URL.',

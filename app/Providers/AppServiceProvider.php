@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('alpha_spaces', function ($attribute, $value) {
           return preg_match('/^[\pL\s-]+$/u', $value);
         });
+
+        //custom validation rule: accepts letters hypens and spaces only
+        Validator::extend('money', function ($attribute, $value) {
+          return preg_match('/^\d*(\.\d{1,2})?$/', $value);
+        });
     }
 
     /**

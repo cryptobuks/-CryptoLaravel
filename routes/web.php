@@ -17,6 +17,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'PortfolioController@index')->name('home');
 
 $this->get('/verify-user/{code}', 'Auth\RegisterController@activateUser')->name('activate.user');
+
+Route::post('/home', 'PortfolioController@store');
+//Route::resource('/home', 'PortfolioController');
