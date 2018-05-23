@@ -34,10 +34,11 @@
                 <div class="alert alert-info">{{Session::get('message') }}</div>
               @endif
               <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Add New Coin</label>
+
               <div class="form-group row">
                 <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
                 <div class="col-sm-9">
-                  <input type="text" name="coin" class="form-control" placeholder="Search coin..">
+                  <input type="text" name="coin" id="searchCoin" class="form-control" placeholder="Search coin..">
                 </div>
               </div>
               <div class="form-group row">
@@ -102,6 +103,42 @@ $('#datepicker').datepicker({
             endDate: new Date()
          });
 $('div.alert').delay(3000).slideUp(300);
+
+
+var engine = new Bloodhound({
+                remote: {
+                    url: '/find?q=%QUERY%',
+                    wildcard: '%QUERY%'
+                },
+                datumTokenizer: Bloodhound.tokenizers.whitespace('q'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace
+            });
+
+            $('#searchCoin').typeahead({
+                            hint: true,
+                            highlight: true,
+                            minLength: 1
+                        }, {
+                            name: 'cryptocurrency',
+                            source: engine,
+                            display: function(data) {
+                              console.log(data);
+                                return data.name  //Input value to be set when you select a suggestion.
+                            },
+                            templates: {
+                                empty: [
+                                    '<div class="list-group search-results-dropdown"><div class="list-group-item">Nothing found.</div></div>'
+                                ],
+                                header: [
+                                    '<div class="list-group search-results-dropdown">'
+                                ],
+                                suggestion: function(data) {
+                                return '<div style="font-weight:normal; margin-top:-10px ! important;" class="list-group-item">' + data.name + '</div></div>'
+                                }
+                            }
+                        });
+
+
 </script>
 
 @endsection

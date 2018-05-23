@@ -11,9 +11,11 @@ use Validator;
 use Session;
 use Redirect;
 use App\Portfolio;
+use App\CryptoCurrency;
 use App\Http\Requests\CoinRequest;
 use Auth;
 use Illuminate\Support\Facades\Input;
+
 class PortfolioController extends Controller
 {
     public function index() {
@@ -30,6 +32,7 @@ class PortfolioController extends Controller
       //dd($roi);
       //dd($totalMarketValue);
       //dd($initialPortfolioValue);
+
       return View::make('home')->with([
         'coins' => $coins,
         'portfolio' => $portfolio,
@@ -54,9 +57,10 @@ class PortfolioController extends Controller
     }
 
     public function store(CoinRequest $request) {
+      //dd($request->all());
       $validated = $request->validated();
       $portfolio = new Portfolio;
-      $portfolio->coin_id = 1;
+      $portfolio->coin_id = CryptoCurrency::select('id')->where('name', Input::get('coin'))->first()->id;
       $portfolio->user_id = Auth::user()->id;
       $portfolio->buy_price = Input::get('price');
       $portfolio->amount = Input::get('amount');

@@ -30,5 +30,4 @@ Route::get('/cmc', 'CoinMarketCapController@index');
 Route::get('/coinDetails/{id}', 'PortfolioController@coinDetails');
 
 
-Route::view('/search', 'search');
-Route::get('/user/find', 'SearchController@searchUsers');
+Route::get('/find', 'CryptoCurrencyController@find');

@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+
+
 class Portfolio extends Model
 {
   protected $table = 'portfolio'; // Define the table name

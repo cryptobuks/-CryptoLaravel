@@ -24,7 +24,7 @@ class CoinRequest extends FormRequest
     public function rules()
     {
         return [
-            //"coin_id" => "required|numeric",
+            "coin" => "required|exists:cryptocurrency,name",
             "price" => "required|money",
             "amount" => "required|numeric",
             //"date_time_purchased" => "required|date",
