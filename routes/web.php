@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::resource('/home', 'PortfolioController');
 
 Route::get('/home', 'PortfolioController@index')->name('home');
 
@@ -23,3 +24,11 @@ $this->get('/verify-user/{code}', 'Auth\RegisterController@activateUser')->name(
 
 Route::post('/home', 'PortfolioController@store');
 //Route::resource('/home', 'PortfolioController');
+
+Route::get('/cmc', 'CoinMarketCapController@index');
+
+Route::get('/coinDetails/{id}', 'PortfolioController@coinDetails');
+
+
+Route::view('/search', 'search');
+Route::get('/user/find', 'SearchController@searchUsers');

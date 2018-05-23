@@ -21,13 +21,38 @@ class PortfolioController extends Controller
       $coins = Portfolio::groupBy('coin_id')
       ->selectRaw('sum(amount) as totalAmount, coin_id')
       ->orderBy('amount','asc')->get();
-      // groupBy('coin_id')
-      // ->selectRaw('sum(amount) as sum, coin_id')
-      // ->pluck('sum','id');
-      //dd($coins);
-      return view('home', compact('coins'));
-      //return View::make('restaurants.index')->with('restaurants', $restaurants);
+      #dd(Portfolio::all()->first()->CryptoCurrency);
+      //return view('home', compact('coins'));
+      $initialPortfolioValue = $this->calculateInitialPortfolioValue()->value;
+      $totalMarketValue = $this->calculateMarketValue()->value;
+      $returnOfInvestment = round($totalMarketValue - $initialPortfolioValue, 2);
+      $returnOfInvestmentPercentage = round($totalMarketValue / $initialPortfolioValue * 100, 2);
+      //dd($roi);
+      //dd($totalMarketValue);
+      //dd($initialPortfolioValue);
+      return View::make('home')->with([
+        'coins' => $coins,
+        'portfolio' => $portfolio,
+        'initialPortfolioValue' => $initialPortfolioValue,
+        'totalMarketValue' => $totalMarketValue,
+        'returnOfInvestment' => $returnOfInvestment,
+        'returnOfInvestmentPercentage' => $returnOfInvestmentPercentage
+      ]);
     }
+
+    public function calculateInitialPortfolioValue() {
+      return Portfolio::where('user_id', Auth::user()->id)
+        ->selectRaw('sum(buy_price * amount) as value')
+        ->first();
+    }
+
+    public function calculateMarketValue() {
+      return Portfolio::where('user_id', Auth::user()->id)
+        ->join('cryptocurrency', 'coin_id', '=', 'cryptocurrency.id')
+        ->selectRaw('sum(cryptocurrency.price_usd * amount) as value')
+        ->first();
+    }
+
     public function store(CoinRequest $request) {
       $validated = $request->validated();
       $portfolio = new Portfolio;
@@ -40,5 +65,10 @@ class PortfolioController extends Controller
       $portfolio->save();
       Session::flash('message', 'Successfully Added New Coin!');
       return Redirect::to('home');
+    }
+
+    public function coinDetails($id) {
+      $coins = Portfolio::where('coin_id', $id)->get();
+      return View::make('coinDetails')->with('coins', $coins);
     }
 }
