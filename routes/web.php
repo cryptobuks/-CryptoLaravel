@@ -31,3 +31,4 @@ Route::get('/coinDetails/{id}', 'PortfolioController@coinDetails');
 
 
 Route::get('/find', 'CryptoCurrencyController@find');
+Route::get('/chart', 'ChartsController@chart');

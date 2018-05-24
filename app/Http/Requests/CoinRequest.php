@@ -27,7 +27,7 @@ class CoinRequest extends FormRequest
             "coin" => "required|exists:cryptocurrency,name",
             "price" => "required|money",
             "amount" => "required|numeric",
-            //"date_time_purchased" => "required|date",
+            "date" => "required|date",
         ];
     }
 }

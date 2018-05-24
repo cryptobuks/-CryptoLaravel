@@ -38,7 +38,7 @@
               <div class="form-group row">
                 <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
                 <div class="col-sm-9">
-                  <input type="text" name="coin" id="searchCoin" class="form-control" placeholder="Search coin..">
+                  <input type="text" name="coin" id="searchCoin" class="form-control" placeholder="Search coin.." autocomplete="off">
                 </div>
               </div>
               <div class="form-group row">
