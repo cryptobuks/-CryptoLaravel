@@ -15,6 +15,10 @@ use App\CryptoCurrency;
 use App\Http\Requests\CoinRequest;
 use Auth;
 use Illuminate\Support\Facades\Input;
+use App\Charts\PortfolioValueChart;
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 class PortfolioController extends Controller
 {
@@ -32,6 +36,7 @@ class PortfolioController extends Controller
       //dd($roi);
       //dd($totalMarketValue);
       //dd($initialPortfolioValue);
+      $chart = $this->chart();
 
       return View::make('home')->with([
         'coins' => $coins,
@@ -39,7 +44,8 @@ class PortfolioController extends Controller
         'initialPortfolioValue' => $initialPortfolioValue,
         'totalMarketValue' => $totalMarketValue,
         'returnOfInvestment' => $returnOfInvestment,
-        'returnOfInvestmentPercentage' => $returnOfInvestmentPercentage
+        'returnOfInvestmentPercentage' => $returnOfInvestmentPercentage,
+        'chart' => $chart
       ]);
     }
 
@@ -54,6 +60,67 @@ class PortfolioController extends Controller
         ->join('cryptocurrency', 'coin_id', '=', 'cryptocurrency.id')
         ->selectRaw('sum(cryptocurrency.price_usd * amount) as value')
         ->first();
+    }
+
+    public function chart() {
+      $chart = new PortfolioValueChart;
+      # Gets current total coin value .
+      $data = DB::table('portfolio AS p')
+        ->selectRaw('p.date_purchased,sum(p.amount * cp.price) AS dayValue')
+        ->join('coin_price AS cp', function($join){
+            $join->on('p.date_purchased' , '=', 'cp.date')
+                 ->on('p.coin_id' , '=', 'cp.coin_id');
+        })
+        ->groupBy('p.date_purchased')
+        ->orderBy('p.date_purchased', 'asc')
+        ->get()
+        ->toArray();
+
+      //dd($data);
+
+      $earliest = new DateTime(Portfolio::oldest('date_purchased')->first()->date_purchased);
+      $latest = new DateTime(Portfolio::latest('date_purchased')->first()->date_purchased);
+      $end = new DateTime("now");
+      $di = new DateInterval('P1D');
+      $period = new DatePeriod($earliest, $di, $end);
+      // Calculates cumulative portfolio value. Adds previous day onto current day.
+      $cumulative = array();
+      $cumulative[0] = (object)array('date_purchased' => $data[0]->date_purchased, 'total' => (double)$data[0]->dayValue);
+      for($i = 1; $i < count($data); $i++) {
+        $cumulative[] = (object)array('date_purchased' => $data[$i]->date_purchased, 'total' => $data[$i]->dayValue + $cumulative[$i - 1]->total);
+      }
+      // Fills empty dates with previous day's portfolio value.
+      $graphData = array();
+      $index = 0;
+      for($i = $earliest; $i <= $latest; $i->modify('+1 day')) {
+        if (isset($cumulative[$index]) && $i->format('Y-m-d') == $cumulative[$index]->date_purchased) {
+          $graphData[] = $cumulative[$index]->total;
+          $index++;
+        } else {
+          $graphData[] = $cumulative[$index - 1]->total;
+        }
+        //echo '<pre>'; print_r($labels); echo '</pre>';
+      }
+      // Ensures data size is same as label size.
+      for($i = $latest; $i <= $end; $i->modify('+1 day')) {
+        $graphData[] = $graphData[count($graphData) - 1];
+      }
+      //dd($graphData);
+      // Generates the labels using earliest date value to now.
+      $labels = array();
+      $labelEarliest = new DateTime(Portfolio::oldest('date_purchased')->first()->date_purchased);
+      for($i = $labelEarliest; $i <= $end; $i->modify('+1 day')) {
+        $labels[] = $i->format('d-M');
+      }
+
+      $chart->labels($labels);
+      $chart->dataset('Sample', 'line', $graphData)
+        ->options([
+          'borderColor' => '#c8e2f2',
+          'backgroundColor' => '#7cb9e8'
+        ]);
+      return $chart;
+
     }
 
     public function store(CoinRequest $request) {
@@ -72,7 +139,24 @@ class PortfolioController extends Controller
     }
 
     public function coinDetails($id) {
-      $coins = Portfolio::where('coin_id', $id)->get();
-      return View::make('coinDetails')->with('coins', $coins);
+
+      $coinTotalValue = DB::table('portfolio AS p')
+        ->selectRaw('sum(p.amount) * c.price_usd AS value')
+        ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
+        ->where([
+          ['p.user_id', '=', Auth::user()->id],
+          ['p.coin_id', '=', $id],
+        ])->first();
+      $coinDetails = CryptoCurrency::where('id', $id)->first();
+      $coins = Portfolio::where([
+          ['user_id', '=', Auth::user()->id],
+          ['coin_id', '=', $id]
+        ])->get();
+
+      return View::make('coinDetails')->with([
+        'coins' => $coins,
+        'coinDetails' => $coinDetails,
+        'coinTotalValue' => $coinTotalValue
+      ]);
     }
 }

@@ -25,7 +25,8 @@ $this->get('/verify-user/{code}', 'Auth\RegisterController@activateUser')->name(
 Route::post('/home', 'PortfolioController@store');
 //Route::resource('/home', 'PortfolioController');
 
-Route::get('/cmc', 'CoinMarketCapController@index');
+Route::get('/cmc', 'CryptoDataController@cmc');
+Route::get('/cc', 'CryptoDataController@cc');
 
 Route::get('/coinDetails/{id}', 'PortfolioController@coinDetails');
 

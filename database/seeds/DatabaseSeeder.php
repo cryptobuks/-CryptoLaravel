@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
       $this->call(UsersTableSeeder::class);
       $this->call(CryptoCurrencySeeder::class);
       $this->call(PortfolioSeeder::class);
+      $this->call(CoinPriceSeeder::class);
 
     }
 }

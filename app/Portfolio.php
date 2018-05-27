@@ -20,15 +20,19 @@ class Portfolio extends Model
     return $this->hasOne('App\CryptoCurrency', 'id', 'coin_id');
   }
 
+  public function CoinPrice() {
+    return $this->hasMany('App\CoinPrice', 'coin_id', 'coin_id');
+  }
+
   public function setDatePurchasedAttribute($value) //Mutator that converts date into Year/Month/Date format to store into DB
   {
     $this->attributes['date_purchased'] =  Carbon::parse($value)->format('y/m/d');
   }
 
-  public function getDatePurchasedAttribute()
-  {
-    return  Carbon::parse($this->attributes['date_purchased'])->format('d-m-y');
-  }
+  // public function getDatePurchasedAttribute()
+  // {
+  //   return  Carbon::parse($this->attributes['date_purchased'])->format('d-m-y');
+  // }
 
   public function getCreatedAtAttribute()
   {

@@ -25,43 +25,15 @@
             </div>
         </div>
     </div>
-    <div class="row">
-      <div class="col-4 mx-auto">
-          <div class="card card-body mb-2">
-            {{ Form::open(array('action' => 'PortfolioController@store')) }}
-            {{Form::token()}}
-              @if (Session::has('message'))
-                <div class="alert alert-info">{{Session::get('message') }}</div>
-              @endif
-              <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Add New Coin</label>
 
-              <div class="form-group row">
-                <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
-                <div class="col-sm-9">
-                  <input type="text" name="coin" id="searchCoin" class="form-control" placeholder="Search coin.." autocomplete="off">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="inputAmount" class="col-sm-3 col-form-label">Amount:</label>
-                <div class="col-sm-3">
-                  <input type="number" name="amount" class="form-control" required="required">
-                </div>
-                <label for="inputPrice" class="col-sm-3 col-form-label">Price:</label>
-                <div class="col-sm-3">
-                  <input type="number" name="price" class="form-control" required="required">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="inputDatePurchased" class="col-sm-3 col-form-label">Date Purchased:</label>
-                <div class="col-sm-9">
-                  <input type="text" name="date" class="date form-control" id="datepicker" size="4">
-                </div>
-              </div>
-            {{ Form::submit('Create!', array('class' => 'btn btn-primary')) }}
-            {{ Form::close() }}
-          </div>
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h2 class="display-4 text-center">Portfolio Value</h2>
+        <div>{!! $chart->container() !!}</div>
+        {!! $chart->script() !!}
       </div>
     </div>
+
 
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -90,7 +62,43 @@
                   </table>
 
                 </div>
-                <div class="border col-lg-6">.col-lg-3<br>aaa<br>aa</div>
+                <div class="border col-lg-6">
+                  <div class="row">
+                    <div class="card card-body mb-2">
+                      {{ Form::open(array('action' => 'PortfolioController@store')) }}
+                      {{Form::token()}}
+                        @if (Session::has('message'))
+                          <div class="alert alert-info">{{Session::get('message') }}</div>
+                        @endif
+                        <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Add New Coin</label>
+
+                        <div class="form-group row">
+                          <label for="inputName" class="col-sm-3 col-form-label">Name:</label>
+                          <div class="col-sm-9">
+                            <input type="text" name="coin" id="searchCoin" class="form-control" placeholder="Search coin.." autocomplete="off">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="inputAmount" class="col-sm-3 col-form-label">Amount:</label>
+                          <div class="col-sm-3">
+                            <input type="number" name="amount" class="form-control" required="required">
+                          </div>
+                          <label for="inputPrice" class="col-sm-3 col-form-label">Price:</label>
+                          <div class="col-sm-3">
+                            <input type="number" name="price" class="form-control" required="required">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="inputDatePurchased" class="col-sm-3 col-form-label">Date Purchased:</label>
+                          <div class="col-sm-9">
+                            <input type="text" name="date" class="date form-control" id="datepicker" size="4">
+                          </div>
+                        </div>
+                      {{ Form::submit('Create!', array('class' => 'btn btn-primary')) }}
+                      {{ Form::close() }}
+                    </div>
+                  </div>
+                </div>
             </div>
         </div>
     </div>

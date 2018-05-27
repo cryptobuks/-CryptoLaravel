@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 use App\Portfolio;
+use App\CryptoCurrency;
 
 class PortfolioSeeder extends Seeder
 {
@@ -24,16 +25,17 @@ class PortfolioSeeder extends Seeder
       // ]);
 
       $holdings = [];
-      foreach (range(1, 5) as $index)
+      foreach (range(1, 10) as $index)
       {
           $timestamp = Carbon::now();
+          $coinPrice = CryptoCurrency::where('id', $index)->pluck('price_usd')->first();
           $holdings[] = [
             'id' => $index,
-            'coin_id' => $index % 2 ? 1 : 2,
+            'coin_id' => Rand(1,10),
             'user_id' => 1,
-            'buy_price' => $index * 100,
-            'amount' => $index * 3,
-            'date_purchased' => "2018-05-20",
+            'buy_price' => mt_rand(0 * 10, $coinPrice * 10) / 10 + $coinPrice,
+            'amount' => Rand(1,30),
+            'date_purchased' => Carbon::now()->subDays(rand(0, 26))->format('Y-m-d'),
             'created_at' => $timestamp,
             'updated_at' => $timestamp,
           ];

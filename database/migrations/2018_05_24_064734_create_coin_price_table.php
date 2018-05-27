@@ -17,8 +17,8 @@ class CreateCoinPriceTable extends Migration
             $table->increments('id');
             $table->integer('coin_id')->unsigned();
             $table->foreign('coin_id')->references('id')->on('cryptocurrency');
-            $table->date('date_purchased')->unsigned();
-            $table->foreign('date_purchased')->references('date_purchased')->on('cryptocurrency');
+            $table->date('date');
+            //$table->foreign('date')->references('date_purchased')->on('portfolio');
             $table->decimal('price', 11, 2);
         });
     }

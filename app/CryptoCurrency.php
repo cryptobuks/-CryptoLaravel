@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Nicolaslopezj\Searchable\SearchableTrait;
+use Carbon\Carbon;
 
 class CryptoCurrency extends Model
 {
@@ -21,5 +22,10 @@ class CryptoCurrency extends Model
 
   public function Portfolio() {
     return $this->belongsTo('App\Portfolio', 'coin_id', 'id');
+  }
+
+  public function getLastUpdatedFormattedAttribute()
+  {
+    return Carbon::createFromTimestamp($this->attributes['last_updated'])->format('d-M-Y');
   }
 }
