@@ -21,21 +21,32 @@ class PortfolioController extends Controller
    }
 
     public function index() {
-      $coinTotalAmount = $this->model->getCoinTotalAmount();
-      $initialPortfolioValue = $this->model->calculateInitialPortfolioValue();
-      $totalMarketValue = $this->model->calculateTotalMarketValue();
-      $returnOfInvestment = round($totalMarketValue - $initialPortfolioValue, 2);
-      $returnOfInvestmentPercentage = round($totalMarketValue / $initialPortfolioValue * 100, 2);
-
       return View::make('home')->with([
-        'coins' => $coinTotalAmount,
+        'coins' => $this->model->getCoinTotalAmount(),
         'portfolio' => $this->model->getAll(),
-        'initialPortfolioValue' => $initialPortfolioValue,
-        'totalMarketValue' => $totalMarketValue,
-        'returnOfInvestment' => $returnOfInvestment,
-        'returnOfInvestmentPercentage' => $returnOfInvestmentPercentage,
+        'initialPortfolioValue' => $this->model->calculateInitialPortfolioValue(),
+        'totalMarketValue' => $this->model->calculateTotalMarketValue(),
+        'returnOfInvestment' => $this->model->getReturnOfInvestment()->value,
+        'returnOfInvestmentPercentage' => $this->model->getReturnOfInvestment()->percentage,
         'chart' => $this->model->createChart()
       ]);
+    }
+
+    public function edit($id) {
+      return View::make('portfolio.edit')->with('portfolio', $this->model->find($id));
+    }
+
+    public function update(CoinRequest $request, $id) {
+      $this->model->update($request, $id);
+      Session::flash('message', 'Successfully Updated Portfolio!');
+      return Redirect::to('home');
+
+    }
+
+    public function destroy($id) {
+      $this->model->destroy($id);
+      Session::flash('message', 'Successfully deleted the coin from Portfolio!');
+      return Redirect::to('home');
     }
 
     public function store(CoinRequest $request) {
@@ -45,7 +56,7 @@ class PortfolioController extends Controller
     }
 
     public function coinDetails($id) {
-      return View::make('coinDetails')->with([
+      return View::make('portfolio.coinDetails')->with([
         'coins' => $this->model->getCoinDetailWithId($id),
         'coinDetails' => $this->model->getCoinDetails($id),
         'coinTotalValue' => $this->model->getCoinTotalValue($id)

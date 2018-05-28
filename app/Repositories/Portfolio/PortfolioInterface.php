@@ -9,7 +9,15 @@ interface PortfolioInterface
 {
     public function create(CoinRequest $request);
 
+    public function find($id);
+
+    public function update(CoinRequest $request, $id);
+
+    public function destroy($id);
+
     public function getAll();
+
+    public function getReturnOfInvestment();
 
     public function getCoinTotalAmount();
 

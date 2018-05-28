@@ -67,6 +67,7 @@
             <th>Profit</th>
             <th>Date Purchased</th>
             <th>Date Added</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -79,6 +80,12 @@
           <td>{{ $value->profit }}</td>
           <td>{{ $value->date_purchased }}</td>
           <td>{{ $value->created_at }}</td>
+          <td>
+            {{ Form::open(array('url' => 'home/' . $value->id, 'class' => 'pull-left')) }}
+            {{ Form::hidden('_method', 'DELETE') }}
+            {{ Form::submit('Delete', array('class' => 'btn btn-warning'))}}
+            {{ Form::close() }}
+          </td>
         </tr>
         @endforeach
         </tbody>
