@@ -30,9 +30,9 @@ class PortfolioRepository extends CryptoCurrencyRepository implements PortfolioI
       return Portfolio::create([
         'coin_id' => CryptoCurrency::select('id')->where('name', Input::get('coin'))->first()->id,
         'user_id' => Auth::user()->id,
-        'buy_price' => $request->get('price'),
+        'buy_price' => $request->get('buy_price'),
         'amount' => $request->get('amount'),
-        'date_purchased' => $request->get('date'),
+        'date_purchased' => $request->get('date_purchased'),
         'created_at' => Carbon::now()
       ]);
     }
@@ -73,25 +73,58 @@ class PortfolioRepository extends CryptoCurrencyRepository implements PortfolioI
     public function getCoinTotalAmount() {
       return Portfolio::where('user_id', '=', Auth::user()->id)
       ->groupBy('coin_id')
-      ->selectRaw('id, sum(amount) as totalAmount, coin_id')
+      ->selectRaw('id, buy_price, sum(amount) as amount, coin_id')
       ->orderBy('amount','asc')->get();
     }
 
+    public function getCoinData($id) {
+      $coinCurrentValue = DB::table('portfolio as p')
+      ->selectRaw('p.amount * c.price_usd as currentValue')
+      ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
+      ->where([
+        ['p.user_id', '=', Auth::user()->id],
+        ['p.coin_id', '=', $id],
+      ])->get();
+      $coinInitialValue = Portfolio::selectRaw('amount * buy_price as initialValue')
+      ->where([
+        ['user_id', '=', Auth::user()->id],
+        ['coin_id', '=', $id],
+      ])->get();
+      //   return '$' . (string)($this->amount * ($this->CryptoCurrency->price_usd - $this->buy_price));
+      $coinProfit = DB::table('portfolio as p')
+      ->selectRaw('p.amount * (c.price_usd - p.buy_price) as profit')
+      ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
+      ->where([
+        ['p.user_id', '=', Auth::user()->id],
+        ['p.coin_id', '=', $id],
+      ])->get();
+
+
+      //combines the data
+      $map = $coinCurrentValue->each(function ($item, $key) use ($coinInitialValue, $coinProfit) {
+        $item->initialValue = $coinInitialValue[$key]->initialValue;
+        $item->profit = $coinProfit[$key]->profit;
+        return $item;
+      });
+
+      return $map;
+    }
+
     public function getCoinTotalValue($id) {
-      return DB::table('portfolio AS p')
-        ->selectRaw('sum(p.amount) * c.price_usd AS value')
+      return $coinTotalValue = DB::table('portfolio AS p')
+        ->selectRaw('sum(p.amount) * c.price_usd AS totalValue')
         ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
         ->where([
           ['p.user_id', '=', Auth::user()->id],
           ['p.coin_id', '=', $id],
         ])->first();
     }
-
-    public function getCoinDetailWithId($id) {
+    public function getPortfolioWithId($id) {
       return Portfolio::where([
           ['user_id', '=', Auth::user()->id],
           ['coin_id', '=', $id]
         ])->get();
+
     }
 
     public function calculateInitialPortfolioValue() {
@@ -162,9 +195,8 @@ class PortfolioRepository extends CryptoCurrencyRepository implements PortfolioI
         }
       }
 
-
       $chart->labels($labels);
-      $chart->dataset('Sample', 'line', $graphData)
+      $chart->dataset('Value', 'line', $graphData)
         ->options([
           'borderColor' => '#c8e2f2',
           'backgroundColor' => '#7cb9e8'

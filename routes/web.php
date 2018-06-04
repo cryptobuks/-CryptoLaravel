@@ -21,6 +21,3 @@ Route::group(['middleware' => ['auth']], function() {
 Route::get('/cmc', 'CryptoDataController@cmc');
 Route::get('/cc', 'CryptoDataController@cc');
 Route::get('/chart', 'ChartsController@chart');
-// Route::get('/test', function() {
-//     return dd(Portfolio::testService());
-// });

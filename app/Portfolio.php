@@ -39,23 +39,6 @@ class Portfolio extends Model
     return  Carbon::parse($this->attributes['created_at'])->format('d-m-y');
   }
 
-  public function getTotalCoinValueAttribute() {
-    return '$' . $this->totalAmount * $this->CryptoCurrency->price_usd;
-  }
-
-  public function getCurrentCoinValueAttribute() {
-    return '$' . $this->amount * $this->CryptoCurrency->price_usd;
-  }
-
-  public function getInitialCoinValueAttribute() {
-    return '$' . $this->amount * $this->buy_price;
-  }
-
-  public function getProfitAttribute() {
-    return '$' . (string)($this->amount * ($this->CryptoCurrency->price_usd - $this->buy_price));
-    //return '$' . (string)(($this->amount * $this->CryptoCurrency->price_usd) - ($this->amount * $this->buy_price));
-  }
-
   public function getCoinNameAttribute() {
     return $this->CryptoCurrency->name;
   }

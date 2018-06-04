@@ -1,8 +1,5 @@
 <?php namespace App\Repositories\Portfolio;
 
-/**
- * A simple interface to set the methods in our Pokemon repository, nothing much happening here
- */
 use App\Http\Requests\CoinRequest;
 
 interface PortfolioInterface
@@ -17,13 +14,15 @@ interface PortfolioInterface
 
     public function getAll();
 
+    public function getCoinTotalValue($id);
+
     public function getReturnOfInvestment();
 
     public function getCoinTotalAmount();
 
-    public function getCoinTotalValue($id);
+    public function getCoinData($id);
 
-    public function getCoinDetailWithId($id);
+    public function getPortfolioWithId($id);
 
     public function calculateInitialPortfolioValue();
 

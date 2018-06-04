@@ -7,7 +7,7 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <a class="btn btn-small btn-primary" href="{{ URL::to('home') }}">Return To Home</a>
-      <h1>{{ $coins->first()->coin_name }} | Portfolio Value (USD): ${{ $coinTotalValue->value }}</h1>
+      <h1>{{ $coinDetails->name }} | Portfolio Value (USD): ${{$coinTotalValue->totalValue}}</h1>
       <hr>
       <div class="panel panel-primary">
         <div class="panel-heading">Details - Last Updated {{ $coinDetails->last_updated_formatted }}</div>
@@ -71,22 +71,23 @@
           </tr>
         </thead>
         <tbody>
-        @foreach($coins as $key => $value)
-        <tr>
-          <td>{{ $value->buy_price }}</td>
-          <td>{{ $value->amount }}</td>
-          <td>{{ $value->initial_coin_value }}</td>
-          <td>{{ $value->current_coin_value }}</td>
-          <td>{{ $value->profit }}</td>
-          <td>{{ $value->date_purchased }}</td>
-          <td>{{ $value->created_at }}</td>
-          <td>
-            {{ Form::open(array('url' => 'home/' . $value->id, 'class' => 'pull-left')) }}
-            {{ Form::hidden('_method', 'DELETE') }}
-            {{ Form::submit('Delete', array('class' => 'btn btn-warning'))}}
-            {{ Form::close() }}
-          </td>
-        </tr>
+        @foreach($coinData as $value)
+          <tr>
+            <td>{{ $value->buy_price }}</td>
+            <td>{{ $value->amount }}</td>
+            <td>{{ $value->initialValue }}</td>
+            <td>{{ $value->currentValue }}</td>
+            <td>{{ $value->profit }}</td>
+            <td>{{ $value->date_purchased }}</td>
+            <td>{{ $value->created_at }}</td>
+            <td>
+              <a class="btn btn-small btn-info" href="{{ URL::to('edit/' . $value->id )}}">Edit Details</a>
+              {{ Form::open(array('url' => 'home/' . $value->id, 'class' => 'pull-right')) }}
+              {{ Form::hidden('_method', 'DELETE') }}
+              {{ Form::submit('Delete', array('class' => 'btn btn-warning'))}}
+              {{ Form::close() }}
+            </td>
+          </tr>
         @endforeach
         </tbody>
       </table>

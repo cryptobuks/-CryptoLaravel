@@ -17,7 +17,7 @@
                 </div>
                 <div class="border col-lg-3">
                   <h3>ROI</h3>
-                  <h4>${{ $returnOfInvestment }} ({{ $returnOfInvestmentPercentage }} %) </h4>
+                  <h4>${{ $returnOfInvestment->value }} ({{ $returnOfInvestment->percentage }} %) </h4>
                 </div>
                 <div class="border col-lg-3">
                   <h3>-</h3>
@@ -46,7 +46,6 @@
                         <th>Symbol</th>
                         <th>Total Amount</th>
                         <th>Current Value</th>
-                        <th>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -54,9 +53,8 @@
                     <tr>
                       <td><a href="{{ URL::to('coinDetails/' . $value->CryptoCurrency->id)}}">{{ $value->CryptoCurrency->name }}</a></td>
                       <td>{{ $value->CryptoCurrency->symbol }}</td>
-                      <td>{{ $value->totalAmount }}</td>
-                      <td>{{ $value->total_coin_value }}</td>
-                      <td><a class="btn btn-small btn-info" href="{{ URL::to('edit/' . $value->id )}}">Edit Details</a></td>
+                      <td>{{ $value->amount }}</td>
+                      <td>{{ $value->CryptoCurrency->price_usd * $value->amount}}</td>
                     </tr>
                     @endforeach
                     </tbody>
@@ -86,7 +84,7 @@
                           </div>
                           <label for="inputPrice" class="col-sm-3 col-form-label">Price:</label>
                           <div class="col-sm-3">
-                            <input type="number" name="buy_price" class="form-control" required="required">
+                            <input type="number" name="buy_price" class="form-control" required="required" step=".01">
                           </div>
                         </div>
                         <div class="form-group row">

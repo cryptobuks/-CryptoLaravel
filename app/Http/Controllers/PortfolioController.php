@@ -26,8 +26,7 @@ class PortfolioController extends Controller
         'portfolio' => $this->model->getAll(),
         'initialPortfolioValue' => $this->model->calculateInitialPortfolioValue(),
         'totalMarketValue' => $this->model->calculateTotalMarketValue(),
-        'returnOfInvestment' => $this->model->getReturnOfInvestment()->value,
-        'returnOfInvestmentPercentage' => $this->model->getReturnOfInvestment()->percentage,
+        'returnOfInvestment' => $this->model->getReturnOfInvestment(),
         'chart' => $this->model->createChart()
       ]);
     }
@@ -56,10 +55,19 @@ class PortfolioController extends Controller
     }
 
     public function coinDetails($id) {
+      $portfolioDetails = $this->model->getPortfolioWithId($id);
+      $coinCalculations = $this->model->getCoinData($id);
+      $coinData = $portfolioDetails->each(function ($item, $key) use ($coinCalculations) {
+        $item->currentValue = $coinCalculations[$key]->currentValue;
+        $item->initialValue = $coinCalculations[$key]->initialValue;
+        $item->profit = $coinCalculations[$key]->profit;
+        return $item;
+      });
       return View::make('portfolio.coinDetails')->with([
-        'coins' => $this->model->getCoinDetailWithId($id),
         'coinDetails' => $this->model->getCoinDetails($id),
-        'coinTotalValue' => $this->model->getCoinTotalValue($id)
+        'coinTotalValue' => $this->model->getCoinTotalValue($id),
+        'coinData' => $coinData
       ]);
+
     }
 }

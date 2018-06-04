@@ -24,7 +24,7 @@ class CryptoDataController extends Controller
       foreach($jsonResponse as $item) {
         $data[] = CryptoCurrency::updateOrCreate(
           [
-            'name' => $item->name
+            'symbol' => $item->symbol
           ],
           [
             'name' => $item->name,
@@ -42,8 +42,8 @@ class CryptoDataController extends Controller
           ]
         );
 
-        $this->cc($item->symbol, $item->rank);
-        echo '</br>' . $item->symbol . '  -  ' . $item->rank . '</br>';
+        //$this->cc($item->symbol, $item->rank);
+        //echo '</br>' . $item->symbol . '  -  ' . $item->rank . '</br>';
       }
 
       return 'Done. Added/Updated ' . count($data) . ' items.';
