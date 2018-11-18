@@ -2,6 +2,7 @@
 
 An online cryptocurrency portfolio tracker that will allow users to track the prices of their cryptocurrency. The portfolio will store the users data into a database and utilise a cryptocurrency API to retrieve current prices and historical data. The data entered into the portfolio will be used to create a graph showing the users portfolio value over time.
 
+
 ## Functionality
 
 - User Register: Users will be able to register an account (name, email, username and password). Allows them access to their own portfolio.
@@ -12,4 +13,33 @@ An online cryptocurrency portfolio tracker that will allow users to track the pr
 - Edit Cryptocurrency Coin: Allows user to change the details of a coin(amount, price, etc).
 - User Graphs: Graphs that display the prices of the users owned coins. For example, line chart that displays the total value of the user’s all-time portfolio.
 - Mail API: Used for password resets. Can also be used for newsletters.
+
+##  Screenshots
+
+### Home Page
+
+![Home](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/Home.png?raw=true)
+
+### Coin Details
+
+![CoinDetails](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/CoinDetails.png?raw=true)
+
+### Edit Coin
+
+![EditCoin](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/EditCoin.png?raw=true)
+
+
+### Search For Coin
+
+![SearchForCoin](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/SearchingForCoin.png?raw=true)
+
+### Date Picker
+
+![DatePicker](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/DatePicker.png?raw=true)
+
+### Validation
+
+![Validation](https://github.com/youkixu/-CryptoLaravel/blob/master/screenshots/Validation.png?raw=true)
+
+
 
