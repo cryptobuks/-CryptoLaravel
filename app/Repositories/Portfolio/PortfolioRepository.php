@@ -76,38 +76,47 @@ class PortfolioRepository extends CryptoCurrencyRepository implements PortfolioI
       ->selectRaw('id, buy_price, sum(amount) as amount, coin_id')
       ->orderBy('amount','asc')->get();
     }
-
-    public function getCoinData($id) {
-      $coinCurrentValue = DB::table('portfolio as p')
+    public function getCoinCurrentValue($id) {
+      return DB::table('portfolio as p')
       ->selectRaw('p.amount * c.price_usd as currentValue')
       ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
       ->where([
         ['p.user_id', '=', Auth::user()->id],
         ['p.coin_id', '=', $id],
       ])->get();
-      $coinInitialValue = Portfolio::selectRaw('amount * buy_price as initialValue')
+    }
+    public function getCoinInitialValue($id) {
+      return Portfolio::selectRaw('amount * buy_price as initialValue')
       ->where([
         ['user_id', '=', Auth::user()->id],
         ['coin_id', '=', $id],
       ])->get();
-      //   return '$' . (string)($this->amount * ($this->CryptoCurrency->price_usd - $this->buy_price));
-      $coinProfit = DB::table('portfolio as p')
+    }
+
+    public function getCoinProfit($id) {
+      return DB::table('portfolio as p')
       ->selectRaw('p.amount * (c.price_usd - p.buy_price) as profit')
       ->join('cryptocurrency AS c', 'c.id', '=', 'p.coin_id')
       ->where([
         ['p.user_id', '=', Auth::user()->id],
         ['p.coin_id', '=', $id],
       ])->get();
+    }
 
+    public function getCoinData($id) {
+      $coinCurrentValue = $this->getCoinCurrentValue($id);
+      $coinInitialValue = $this->getCoinInitialValue($id);
+      $coinProfit = $this->getCoinProfit($id);
+      $portfolioDetails = $this->getPortfolioWithId($id);
 
-      //combines the data
-      $map = $coinCurrentValue->each(function ($item, $key) use ($coinInitialValue, $coinProfit) {
+      $coinData = $portfolioDetails->each(function ($item, $key) use ($coinCurrentValue, $coinInitialValue, $coinProfit) {
+        $item->currentValue = $coinCurrentValue[$key]->currentValue;
         $item->initialValue = $coinInitialValue[$key]->initialValue;
         $item->profit = $coinProfit[$key]->profit;
         return $item;
       });
 
-      return $map;
+      return $coinData;
     }
 
     public function getCoinTotalValue($id) {

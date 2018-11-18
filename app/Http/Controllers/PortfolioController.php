@@ -55,18 +55,10 @@ class PortfolioController extends Controller
     }
 
     public function coinDetails($id) {
-      $portfolioDetails = $this->model->getPortfolioWithId($id);
-      $coinCalculations = $this->model->getCoinData($id);
-      $coinData = $portfolioDetails->each(function ($item, $key) use ($coinCalculations) {
-        $item->currentValue = $coinCalculations[$key]->currentValue;
-        $item->initialValue = $coinCalculations[$key]->initialValue;
-        $item->profit = $coinCalculations[$key]->profit;
-        return $item;
-      });
       return View::make('portfolio.coinDetails')->with([
         'coinDetails' => $this->model->getCoinDetails($id),
         'coinTotalValue' => $this->model->getCoinTotalValue($id),
-        'coinData' => $coinData
+        'coinData' => $this->model->getCoinData($id)
       ]);
 
     }

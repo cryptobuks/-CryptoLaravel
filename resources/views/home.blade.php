@@ -7,20 +7,17 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
              <div class="border row row-eq-height">
-                <div class="border col-lg-3">
+                <div class="border col-lg-4">
                   <h3>Total Market Value</h3>
                   <h4>${{ $totalMarketValue }}</h4>
                 </div>
-                <div class="border col-lg-3">
+                <div class="border col-lg-4">
                   <h3>Initial Portfolio Value</h3>
                   <h4>${{ $initialPortfolioValue }}</h4>
                 </div>
-                <div class="border col-lg-3">
+                <div class="border col-lg-4">
                   <h3>ROI</h3>
                   <h4>${{ $returnOfInvestment->value }} ({{ $returnOfInvestment->percentage }} %) </h4>
-                </div>
-                <div class="border col-lg-3">
-                  <h3>-</h3>
                 </div>
             </div>
         </div>
@@ -69,6 +66,7 @@
                         @if (Session::has('message'))
                           <div class="alert alert-info">{{Session::get('message') }}</div>
                         @endif
+
                         <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Add New Coin</label>
 
                         <div class="form-group row">
@@ -93,6 +91,7 @@
                             <input type="text" name="date_purchased" class="date form-control" id="datepicker" size="4">
                           </div>
                         </div>
+                      {{ Html::ul($errors->all()) }}
                       {{ Form::submit('Create!', array('class' => 'btn btn-primary')) }}
                       {{ Form::close() }}
                     </div>

@@ -20,6 +20,12 @@ interface PortfolioInterface
 
     public function getCoinTotalAmount();
 
+    public function getCoinCurrentValue($id);
+
+    public function getCoinInitialValue($id);
+
+    public function getCoinProfit($id);
+
     public function getCoinData($id);
 
     public function getPortfolioWithId($id);
